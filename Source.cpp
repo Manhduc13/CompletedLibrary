@@ -15,7 +15,7 @@ enum ACTION {
 	READ, TITLE, SERIAL, REGIST, EXIT,
 	ADMIN_LOGIN, MEMBER_LOGIN,
 	BORROW, RETURN, SUB, UNSUB, CLIST, BLIST,
-	ADD, REMOVE, SHOW, HIDE, EDIT, NEW_ADMIN, NEW_COLLECTION, DEL_COLLECTION
+	ADD_L, REMOVE, SHOW, HIDE, EDIT, NEW_ADMIN, NEW_COLLECTION, DEL_COLLECTION, ADD_C
 };
 
 bool checkAdmin(string username, string password, vector<Admin*> adList, int& index);
@@ -62,26 +62,32 @@ int main() {
 	memberMenu->addSubMenu(mainMenu);
 	// Admin menu
 	Menu* adminMenu = new Menu("Admin Section", "");
-	Menu* addBook = new Menu("Add new book", "", ADD);
+	Menu* addBook = new Menu("Add new book to library", "", ADD_L);
 	Menu* removeBook = new Menu("Remove book", "", REMOVE);
 	Menu* showBook = new Menu("Show book", "", SHOW);
 	Menu* hideBook = new Menu("Hide book", "", HIDE);
 	Menu* editBook = new Menu("Edit book", "", EDIT);
+	Menu* editCollection = new Menu("Edit Collection list", "");
 	Menu* createAdmin = new Menu("Admin Register", "", NEW_ADMIN);
 	Menu* createCollection = new Menu("New Collection", "", NEW_COLLECTION);
 	Menu* deleteCollection = new Menu("Delete Collection", "", DEL_COLLECTION);
-
+	Menu* addBookToCollection = new Menu("Add book to collection", "", ADD_C);
+	  
 	adminMenu->addSubMenu(addBook);
 	adminMenu->addSubMenu(removeBook);
 	adminMenu->addSubMenu(showBook);
 	adminMenu->addSubMenu(hideBook);
 	adminMenu->addSubMenu(editBook);
+	adminMenu->addSubMenu(editCollection);
 	adminMenu->addSubMenu(createAdmin);
-	adminMenu->addSubMenu(createCollection);
-	adminMenu->addSubMenu(deleteCollection);
 	adminMenu->addSubMenu(mainMenu);
 
-	Guest* g = new Guest();
+	editCollection->addSubMenu(createCollection);
+	editCollection->addSubMenu(deleteCollection);
+	editCollection->addSubMenu(addBookToCollection);
+	editCollection->addSubMenu(adminMenu);
+
+	Guest* guest = new Guest();
 	User* user01 = new Admin();
 	string username;
 	string password;
@@ -99,22 +105,24 @@ int main() {
 	memberList.push_back(member02);
 	Member* currentMember = member01;
 
+	vector<Collection*> listCollection;
 	Collection* c = new Collection();
 	Collection* collection01 = new Collection(123456, "good");
 	Collection* collection02 = new Collection(234567, "bad");
-	admin01->createCollection(collection01);
-	admin01->createCollection(collection02);
+	listCollection.push_back(collection01);
+	listCollection.push_back(collection02);
+
 	string name;
 	int cID;
 
+	vector<Book*> listBook;
 	Book* b = new Book();
 	Book* book01 = new Book("math", "123456", "manh", 120, 30);
 	Book* book02 = new Book("physic", "234567", "manh", 110, 20);
 	Book* book03 = new Book("chemistry", "345678", "manh", 100, 10);
-	admin01->addBook(book01);
-	admin01->addBook(book02);
-	admin01->addBook(book03);
-	
+	listBook.push_back(book01);
+	listBook.push_back(book02);
+	listBook.push_back(book03);
 
 	collection01->addBook(book01);
 	collection01->addBook(book02);
@@ -135,19 +143,21 @@ int main() {
 			break;
 		case READ:
 			currentMenu->displayMenu();
-			admin01->read();
+			cin.ignore();
+			cout << "Enter title of the book you want to read: "; getline(cin, title);
+			guest->read(listBook, title);
 			currentMenu = mainMenu;
 			break;
 		case TITLE:
 			currentMenu->displayMenu();
 			cin.ignore();
 			cout << "Enter the book's title to search: "; getline(cin, title);
-			if (admin01->searchByTitle(title) != nullptr && admin01->searchByTitle(title)->getAvailabilityStatus() == true) {
+			if (admin01->searchByTitle(listBook, title) != nullptr && admin01->searchByTitle(listBook, title)->getAvailabilityStatus() == true) {
 				cout << "This book exists in our library" << endl;
-				cout << "Title: " << admin01->searchByTitle(title)->getTitle() << endl;
-				cout << "Serial: " << admin01->searchByTitle(title)->getSerial() << endl;
-				cout << "Author name: " << admin01->searchByTitle(title)->getAuthorName() << endl;
-				cout << "Number of pages: " << admin01->searchByTitle(title)->getPageCount() << endl;
+				cout << "Title: " << admin01->searchByTitle(listBook, title)->getTitle() << endl;
+				cout << "Serial: " << admin01->searchByTitle(listBook, title)->getSerial() << endl;
+				cout << "Author name: " << admin01->searchByTitle(listBook, title)->getAuthorName() << endl;
+				cout << "Number of pages: " << admin01->searchByTitle(listBook, title)->getPageCount() << endl;
 			}
 			else {
 				cout << "Sorry! We don't have that book" << endl;
@@ -158,12 +168,12 @@ int main() {
 			currentMenu->displayMenu();
 			cin.ignore();
 			cout << "Enter the book'serial: "; getline(cin, serial);
-			if (admin01->searchBySerial(serial) != nullptr && admin01->searchBySerial(serial)->getAvailabilityStatus() == true) {
+			if (admin01->searchBySerial(listBook, serial) != nullptr && admin01->searchBySerial(listBook, serial)->getAvailabilityStatus() == true) {
 				cout << "This book exists in our library" << endl;
-				cout << "Title: " << admin01->searchBySerial(serial)->getTitle() << endl;
-				cout << "Serial: " << admin01->searchBySerial(serial)->getSerial() << endl;
-				cout << "Author name: " << admin01->searchBySerial(serial)->getAuthorName() << endl;
-				cout << "Number of pages: " << admin01->searchBySerial(serial)->getPageCount() << endl;
+				cout << "Title: " << admin01->searchBySerial(listBook, serial)->getTitle() << endl;
+				cout << "Serial: " << admin01->searchBySerial(listBook, serial)->getSerial() << endl;
+				cout << "Author name: " << admin01->searchBySerial(listBook, serial)->getAuthorName() << endl;
+				cout << "Number of pages: " << admin01->searchBySerial(listBook, serial)->getPageCount() << endl;
 			}
 			else {
 				cout << "Sorry! We don't have that book" << endl;
@@ -172,7 +182,7 @@ int main() {
 			break;
 		case REGIST:
 			currentMenu->displayMenu();
-			memberList.push_back(g->regist());
+			memberList.push_back(guest->regist());
 			cout << "Register successfully." << endl;
 			currentMenu = memberMenu;		
 			break;
@@ -206,7 +216,7 @@ int main() {
 				currentMenu = loginMenu;
 			}
 			break;
-		case ADD:
+		case ADD_L:
 			currentMenu->displayMenu();
 			cout << "Enter new book information:\n";
 			cin.ignore();
@@ -220,7 +230,8 @@ int main() {
 			b->setAuthorName(author);
 			b->setPageCount(pC);
 			b->setFreePageCount(fC);
-			currentAdmin->addBook(b);
+			//currentAdmin->addBook(listBook,b);
+			listBook.push_back(b);
 			cout << "Add book successfully." << endl;
 			currentMenu = adminMenu;
 			break;
@@ -228,20 +239,52 @@ int main() {
 			currentMenu->displayMenu();
 			cin.ignore();
 			cout << "Enter the book's title you want to remove: "; getline(cin, title);
-			currentAdmin->removeBook(admin01->searchByTitle(title));
+			//currentAdmin->removeBook(listBook, currentAdmin->searchByTitle(listBook, title));
+			for (int i = 0; i < listBook.size(); i++) {
+				if (title == listBook[i]->getTitle()) {
+					listBook.erase(listBook.begin() + i);
+					break;
+				}
+			}
+			cout << "That book has been removed" << endl;
 			currentMenu = adminMenu;
 			break;
 		case EDIT:
 			currentMenu->displayMenu();
 			cin.ignore();
 			cout << "Enter the book's title you want to edit: "; getline(cin, title);
-			currentAdmin->editBook(admin01->searchByTitle(title));
+			if (currentAdmin->searchByTitle(listBook, title) != nullptr) {
+				currentAdmin->editBook(currentAdmin->searchByTitle(listBook, title));
+			}
+			else {
+				cout << "Sorry! We don't have that book" << endl;
+			}
+			
 			currentMenu = adminMenu;
 			break;
 		case NEW_ADMIN:
 			currentMenu->displayMenu();
 			adminList.push_back(currentAdmin->createAdmin());
 			cout << "Register successfully." << endl;
+			currentMenu = adminMenu;
+			break;
+		case ADD_C:
+			currentMenu->displayMenu();
+			cin.ignore();
+			cout << "Enter name of collection you want to add book: "; getline(cin, name);
+			if (currentAdmin->searchCollection(listCollection, name) != nullptr) {
+				cout << "Enter name of book you want to add to that collection: "; getline(cin, title);
+				if (currentAdmin->searchByTitle(listBook, title) != nullptr) {
+					currentAdmin->addBookToCollection(currentAdmin->searchCollection(listCollection, name), currentAdmin->searchByTitle(listBook, title));
+					cout << "Add book successfully." << endl;
+				}
+				else {
+					cout << "That book doesn't exist!\n";
+				}
+			}
+			else {
+				cout << "The collection doesn't exist!\n";
+			}
 			currentMenu = adminMenu;
 			break;
 		case NEW_COLLECTION:
@@ -252,7 +295,7 @@ int main() {
 			cout << "Collection ID (6 digits): "; cin >> cID;
 			c->setName(name);
 			c->setID(cID);
-			currentAdmin->createCollection(c);
+			currentAdmin->createCollection(listCollection, c);
 			cout << "Create collection successfully." << endl;
 			currentMenu = adminMenu;
 			break;
@@ -260,29 +303,29 @@ int main() {
 			currentMenu->displayMenu();
 			cin.ignore();
 			cout << "Enter name of collection you  want to delete: "; getline(cin, name);
-			currentAdmin->deleteCollection(currentAdmin->searchCollection(name));
+			currentAdmin->deleteCollection(listCollection,currentAdmin->searchCollection(listCollection,name));
 			currentMenu = adminMenu;
 			break;
 		case HIDE:
 			currentMenu->displayMenu();
 			cin.ignore();
 			cout << "Enter book's title you want to hide: "; getline(cin, title);
-			currentAdmin->hideBook(admin01->searchByTitle(title));
+			currentAdmin->hideBook(listBook, currentAdmin->searchByTitle(listBook, title));
 			currentMenu = adminMenu;
 			break;
 		case SHOW:
 			currentMenu->displayMenu();
 			cin.ignore();
 			cout << "Enter book's title you want to show publicly: "; getline(cin, title);
-			currentAdmin->showBook(admin01->searchByTitle(title));
+			currentAdmin->showBook(listBook, admin01->searchByTitle(listBook, title));
 			currentMenu = adminMenu;
 			break;
 		case BORROW:
 			currentMenu->displayMenu();
 			cin.ignore();
 			cout << "Enter book's title you want to borrow: "; getline(cin, title);
-			if (admin01->searchByTitle(title)) {
-				currentMember->borrowBook(admin01->searchByTitle(title));
+			if (currentMember->searchByTitle(listBook, title)) {
+				currentMember->borrowBook(currentMember->searchByTitle(listBook, title));
 				cout << "Borrow book successfully." << endl;
 			}
 			else {
@@ -306,7 +349,7 @@ int main() {
 			currentMenu->displayMenu();
 			cin.ignore();
 			cout << "Enter name of collection you  want to subscribe: "; getline(cin, name);
-			currentMember->subscribeCollection(currentMember->searchCollection(name));
+			currentMember->subscribeCollection(currentMember->searchCollection(listCollection,name));
 			cout << "That collection has been add to your subscribed list." << endl;
 			currentMenu = memberMenu;
 			break;
@@ -327,16 +370,28 @@ int main() {
 			break;
 		}
 	}
+
 	for (int i = 0; i < adminList.size(); i++) {
 		delete adminList[i];
 	}
 	adminList.clear();
 	delete currentAdmin;
+
 	for (int i = 0; i < memberList.size(); i++) {
 		delete memberList[i];
 	}
 	memberList.clear();
 	delete currentMember;
+
+	for (int i = 0; i < listCollection.size(); i++) {
+		delete listCollection[i];
+	}
+	listCollection.clear();
+
+	for (int i = 0; i < listBook.size(); i++) {
+		delete listBook[i];
+	}
+	listBook.clear();
 	return 0;
 }
 bool checkAdmin(string username, string password, vector<Admin*> adList, int& index) {

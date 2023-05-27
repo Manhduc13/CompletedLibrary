@@ -7,14 +7,14 @@ class User
 {
 protected:
 	int id;
-	vector<Book*> listBook;
-	vector<Collection*> listCollection;
+	//vector<Book*> listBook;
+	//vector<Collection*> listCollection;
 public:
 	User();
 	User(int);
 	~User();
-	void read();
-	Book* searchByTitle(string);
-	Book* searchBySerial(string);
+	void read(vector<Book*> listBook, string);
+	Book* searchByTitle(vector<Book*> listBook, string);
+	Book* searchBySerial(vector<Book*> listBook, string);
 };
 

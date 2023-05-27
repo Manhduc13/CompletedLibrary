@@ -12,21 +12,21 @@ Admin::~Admin()
 {
 }
 
-void Admin::bookInfo(Book* b)
+void Admin::bookInfo(vector<Book*> listBook, string title)
 {
 	for (int i = 0; i < listBook.size(); i++) {
-		if (b == listBook[i]) {
+		if (title == listBook[i]->getTitle()) {
 			cout << listBook[i]->getSerial() << endl;
 		}
 	}
 }
 
-void Admin::addBook(Book* b)
+/*void Admin::addBook(vector<Book*> listBook, Book* b)
 {
 	listBook.push_back(b);
-}
+}*/
 
-void Admin::removeBook(Book* b)
+/*void Admin::removeBook(vector<Book*> listBook, Book* b)
 {
 	for (int i = 0; i < listBook.size(); i++) {
 		if (b == listBook[i]) {
@@ -35,7 +35,7 @@ void Admin::removeBook(Book* b)
 		}
 	}
 	cout << "That book has been removed" << endl;
-}
+}*/
 
 void Admin::editBook(Book* b)
 {
@@ -90,7 +90,7 @@ Admin* Admin::createAdmin()
 	return newAdmin;
 }
 
-Collection* Admin::searchCollection(string name)
+Collection* Admin::searchCollection(vector<Collection*> listCollection, string name)
 {
 	Collection* temp = nullptr;
 	for (int i = 0; i < listCollection.size(); i++) {
@@ -101,12 +101,17 @@ Collection* Admin::searchCollection(string name)
 	return temp;
 }
 
-void Admin::createCollection(Collection* c)
+void Admin::addBookToCollection(Collection* collection, Book* addedBook)
+{
+	collection->addBook(addedBook);
+}
+
+void Admin::createCollection(vector<Collection*> listCollection, Collection* c)
 {
 	listCollection.push_back(c);
 }
 
-void Admin::deleteCollection(Collection* c)
+void Admin::deleteCollection(vector<Collection*> listCollection, Collection* c)
 {
 	for (int i = 0; i < listCollection.size(); i++) {
 		if (c == listCollection[i]) {
@@ -117,7 +122,7 @@ void Admin::deleteCollection(Collection* c)
 	cout << "That collection has been removed." << endl;
 }
 
-void Admin::hideBook(Book* b)
+void Admin::hideBook(vector<Book*> listBook, Book* b)
 {
 	for (int i = 0; i < listBook.size(); i++) {
 		if (b == listBook[i]) {
@@ -128,7 +133,7 @@ void Admin::hideBook(Book* b)
 	cout << "That book has been hiden." << endl;
 }
 
-void Admin::showBook(Book* b)
+void Admin::showBook(vector<Book*> listBook, Book* b)
 {
 	for (int i = 0; i < listBook.size(); i++) {
 		if (b == listBook[i]) {

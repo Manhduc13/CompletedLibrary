@@ -7,14 +7,15 @@ public:
 	Admin();
 	Admin(string, string, string, string, int);
 	~Admin();
-	void bookInfo(Book*);
-	void addBook(Book*);
-	void removeBook(Book*);
-	void editBook(Book*);
+	void bookInfo(vector<Book*> listBook, string);
+	//void addBook(vector<Book*> listBook, Book*);
+	//void removeBook(vector<Book*> listBook, Book*);
+	void editBook( Book*);
 	Admin* createAdmin();
-	Collection* searchCollection(string); // use to delete Collection
-	void createCollection(Collection*);
-	void deleteCollection(Collection*);
-	void hideBook(Book*);
-	void showBook(Book*);
+	Collection* searchCollection(vector<Collection*> listCollection,string); // use to delete Collection
+	void addBookToCollection(Collection*, Book*);
+	void createCollection(vector<Collection*> listCollection, Collection*);
+	void deleteCollection(vector<Collection*> listCollection, Collection*);
+	void hideBook(vector<Book*> listBook, Book*);
+	void showBook(vector<Book*> listBook, Book*);
 };

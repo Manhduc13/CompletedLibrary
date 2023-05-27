@@ -22,7 +22,7 @@ public:
 	Book* searchBorrowedBook(string title);
 	void returnBook(Book* b);
 	void displayBorrowList();
-	Collection* searchCollection(string name); // use to subscribe Collection
+	Collection* searchCollection(vector<Collection*> listCollection, string name); // use to subscribe Collection
 	Collection* searchSubCollection(string name);
 	void subscribeCollection(Collection* c);
 	void unSubscribeCollection(Collection* c);

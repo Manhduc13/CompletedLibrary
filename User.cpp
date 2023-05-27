@@ -3,8 +3,8 @@
 User::User()
 {
 	id = 0;
-	listBook.clear();
-	listCollection.clear();
+	//listBook.clear();
+	//listCollection.clear();
 }
 
 User::User(int id)
@@ -14,7 +14,7 @@ User::User(int id)
 
 User::~User()
 {
-	if (!listBook.empty()) {
+	/*if (!listBook.empty()) {
 		for (int i = 0; i < listBook.size(); i++) {
 			delete listBook[i];
 		}
@@ -25,19 +25,24 @@ User::~User()
 			delete listCollection[i];
 		}
 		listCollection.clear();
-	}
+	}*/
 }
 
-void User::read()
+void User::read(vector<Book*> listBook, string title)
 {
-	for (int i = 0; i < listBook.size(); i++) {
-		if (listBook[i]) {
-			cout << "Title: " << listBook[i]->getTitle() << " === " << "Number of free pages: " << listBook[i]->getFreePageCount() << endl;
-		}
+	if (searchByTitle(listBook, title) != nullptr && searchByTitle(listBook, title)->getAvailabilityStatus() == true) {
+		cout << "Title: " << searchByTitle(listBook, title)->getTitle() << endl;
+		cout << "Serial: " << searchByTitle(listBook, title)->getSerial() << endl;
+		cout << "Author name: " << searchByTitle(listBook, title)->getAuthorName() << endl;
+		cout << "Number of pages: " << searchByTitle(listBook, title)->getPageCount() << endl;
+		cout << "Number of free pages: " << searchByTitle(listBook, title)->getFreePageCount() << endl;
+	}
+	else {
+		cout << "Sorry! We don't have that book" << endl;
 	}
 }
 
-Book* User::searchByTitle(string title)
+Book* User::searchByTitle(vector<Book*> listBook, string title)
 {
 	Book* temp=nullptr;
 	for (int i = 0; i < listBook.size(); i++) {
@@ -48,7 +53,7 @@ Book* User::searchByTitle(string title)
 	return temp;
 }
 
-Book* User::searchBySerial(string serial)
+Book* User::searchBySerial(vector<Book*> listBook, string serial)
 {
 	Book* temp = nullptr;
 	for (int i = 0; i < listBook.size(); i++) {

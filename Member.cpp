@@ -88,7 +88,7 @@ void Member::displayBorrowList()
 	}
 }
 
-Collection* Member::searchCollection(string name)
+Collection* Member::searchCollection(vector<Collection*> listCollection, string name)
 {
 	Collection* temp = nullptr;
 	for (int i = 0; i < listCollection.size(); i++) {
